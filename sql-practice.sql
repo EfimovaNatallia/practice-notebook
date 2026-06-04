@@ -41,3 +41,21 @@ from grouped_songs_history as gsh
 full join grouped_songs_weekly as gsw 
 ON gsh.user_id = gsw.user_id AND gsh.song_id = gsw.song_id
 order by song_plays desc
+
+
+-- Задача 3 - International Call Percentage (Использование двойного джойна)
+-- Источник - https://datalemur.com/questions/international-call-percentage
+-- Дата 27.04.2026
+
+with total AS
+(SELECT 
+pc.caller_id,
+pc.receiver_id,
+pi1.country_id AS caller_country,
+pi2.country_id AS receiver_country
+FROM phone_calls pc
+join phone_info pi1 using (caller_id)
+JOIN phone_info pi2 ON pc.receiver_id = pi2.caller_id)
+SELECT
+round((count (case when caller_country!=receiver_country then 1 end)*100.0)/count(*),1)
+from total
